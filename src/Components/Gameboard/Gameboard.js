@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import styles from './Gameboard.module.scss';
 
@@ -20,8 +20,81 @@ const Gameboard = () => {
     playerTurn === 1 ? setPlayerTurn(2) : setPlayerTurn(1);
   }
 
-  // when gameState updates, we want to check to see if the game is over
-  // game should be over when a player wins or there are no turns left i.e. a tie
+  const onHandleGameOver = (gameOverState) => {
+    //stuff to do here:
+    //add score to the winning player
+    //display the winning line with an animation
+    //clear the game board
+    //reset the player turn to 1
+  }
+
+  const checkForGameOver = () => { //returns an object {bool: game is over, int: winning player, obj: {string: row/col, int: row/col#}}
+    if (gameState[0][0] === gameState[0][1] && gameState[0][0] === gameState[0][2] && gameState[0][0] !== 0) {
+      return ({
+        gameOver: true,
+        winner: gameState[0][0],
+        winningLine: {line: 'row', num: 0}
+      })
+    } else if (gameState[1][0] === gameState[1][1] && gameState[1][0] === gameState[1][2] && gameState[1][0] !== 0) {
+      return ({
+        gameOver: true,
+        winner: gameState[1][0],
+        winningLine: {line: 'row', num: 1}
+      })
+    } else if (gameState[2][0] === gameState[2][1] && gameState[2][0] === gameState[2][2] && gameState[2][0] !== 0) {
+      return ({
+        gameOver: true,
+        winner: gameState[2][0],
+        winningLine: {line: 'row', num: 2}
+      })
+    } else if (gameState[0][0] === gameState[1][0] && gameState[0][0] === gameState[2][0] && gameState[0][0] !== 0) {
+      return ({
+        gameOver: true,
+        winner: gameState[0][0],
+        winningLine: {line: 'col', num: 0}
+      })
+    } else if (gameState[0][1] === gameState[1][1] && gameState[0][1] === gameState[2][1] && gameState[0][1] !== 0) {
+      return ({
+        gameOver: true,
+        winner: gameState[0][1],
+        winningLine: {line: 'col', num: 1}
+      })
+    } else if (gameState[0][2] === gameState[1][2] && gameState[0][2] === gameState[2][2] && gameState[0][2] !== 0) {
+      return ({
+        gameOver: true,
+        winner: gameState[0][2],
+        winningLine: {line: 'col', num: 2}
+      })
+    } else if (gameState[0][0] === gameState[1][1] && gameState[0][0] === gameState[2][2] && gameState[0][0] !== 0) {
+      return ({
+        gameOver: true,
+        winner: gameState[0][0],
+        winningLine: {line: 'diag', num: 0}
+      })
+    } else if (gameState[0][2] === gameState[1][1] && gameState[0][2] === gameState[2][0] && gameState[0][2] !== 0) {
+      return ({
+        gameOver: true,
+        winner: gameState[0][2],
+        winningLine: {line: 'diag', num: 1}
+      })
+    }
+
+    if (!gameState[0].includes(0) && !gameState[1].includes(0) && !gameState[2].includes(0)) return ({ // a tie - no more moves left.
+      gameOver: true,
+      winner: 3
+    });
+
+    return ({
+      gameOver: false
+    })
+  }
+
+  useEffect (() => {
+    const gameOverState = checkForGameOver();
+
+    if (gameOverState.gameOver === true) onHandleGameOver(gameOverState);
+
+  }, [gameState])
 
   return (
     <div>
