@@ -16,3 +16,16 @@
   height: calc(100% / 3);
   align-items: center;
 }
+
+.scoreboard {
+  width: 500px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-around;
+}
+.active {
+  border-bottom: 2px solid blue;
+}
+.score {
+  text-align: center;
+}
