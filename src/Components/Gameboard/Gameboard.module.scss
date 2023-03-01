@@ -1,12 +1,14 @@
 .gameboard {
-  height: 500px;
-  width: 500px;
+  height: min(500px, calc(100vw - 20px));
+  width: min(500px, calc(100vw - 20px));
   padding: 20px;
 
   background-size: cover;
   background-image: url('../../../public/assets/images/grid.svg');
   margin: 0 auto;
   z-index: 10;
+
+  position: relative;
 }
 
 .row {
@@ -19,7 +21,7 @@
 }
 
 .scoreboard {
-  width: 500px;
+  width:min(500px, calc(100vw - 20px));
   margin: 20px auto 0 auto;
   display: flex;
   justify-content: space-around;
@@ -41,6 +43,14 @@
 }
 .gameEndLine {
   z-index: 10;
+  height: 100%;
+  width: 100%;
+
+  top:0;
+  left: 0;
+  position: absolute;
+
+  padding: 20px;
 }
 .fadeOut {
   opacity: 0;

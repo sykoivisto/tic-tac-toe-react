@@ -1,6 +1,11 @@
 .container {
-    position: fixed;
     pointer-events: none;
+    height: 100%;
+    width: 100%;
+}
+.svg {
+    height: 100%;
+    width: 100%;
 }
 
 .line {animation:line-cross1-draw 1s; stroke-dasharray: 150;}

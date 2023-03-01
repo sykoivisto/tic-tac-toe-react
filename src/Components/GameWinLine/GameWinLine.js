@@ -61,7 +61,7 @@ const GameWinLine = ({winningLine}) => {
   
   return(
     <div className={styles.container}>
-      <svg className={styles.svg} width="500" height="500" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <svg className={styles.svg} viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
         <line className={styles.line} x1={position.x1} y1={position.y1} x2={position.x2} y2={position.y2} stroke="#000" strokeWidth="2.0px" strokeLinecap="round"></line>
       </svg>
     </div>

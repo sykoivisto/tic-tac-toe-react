@@ -17,7 +17,7 @@ const Gameboard = () => {
   const [player2Score, setPlayer2Score] = useState(0);
   const [gameEndWinner, setGameEndWinner] = useState(0);
   const [displayGameEndModal, setDisplayGameEndModal] = useState(false);
-  const [winningLine, setWinningLine] = useState([0,0]); // two vals representing the first and second point of the line. 0-8 represent each grid square.
+  const [winningLine, setWinningLine] = useState([0,2]); // two vals representing the first and second point of the line. 0-8 represent each grid square.
   const [showWinningLine, setShowWinningLine] = useState(false);
 
   const checkForGameOver = (gameState) => { //returns an object {gameOver (bool), winner (int), {line (string), num (int)}}
@@ -151,7 +151,6 @@ const Gameboard = () => {
             <GameEndModal winner={gameEndWinner} onClickHandler={onClickHideGameEndModal}></GameEndModal>
           </div> : null
       }
-
       <div className={styles.scoreboard}>
         <div className={`${styles.player1} ${playerTurn === 1 ? styles.active : null}`}>
           Player 1
@@ -166,9 +165,9 @@ const Gameboard = () => {
           </div>
         </div>
       </div>
-      <div className={styles.gameboard}>
-        { showWinningLine ? 
-          <div className={`${styles.gameEndLine}, ${ displayGameEndModal ? styles.fadeOut : null}`}>
+      <div className={`${styles.gameboard} ${ displayGameEndModal ? styles.fadeOut : null}`}>
+      { showWinningLine ? 
+          <div className={styles.gameEndLine}>
             <GameWinLine winningLine={winningLine}></GameWinLine>
           </div> : null }
         <div className={styles.row}>
