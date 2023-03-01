@@ -6,6 +6,7 @@
   background-size: cover;
   background-image: url('../../../public/assets/images/grid.svg');
   margin: 0 auto;
+  z-index: 10;
 }
 
 .row {
@@ -32,7 +33,18 @@
   text-align: center;
 }
 .gameEndModal {
+  z-index: 100;
   animation: fadeIn 0.5s ease-out;
+  * {
+    z-index: 100;
+  }
+}
+.gameEndLine {
+  z-index: 10;
+}
+.fadeOut {
+  opacity: 0;
+  animation: .5s;
 }
 
 @keyframes fadeIn {
@@ -48,12 +60,4 @@
       display: block;
       opacity: 1;
   }
-}
-
-#fullsvg {
-  left: 0px;
-  top: 0px;
-  position: fixed;
-  margin: 0;
-  pointer-events: none;
 }

@@ -1,4 +1,9 @@
-.line {animation:line-cross1-draw 2s; stroke-dasharray: 150;}
+.container {
+    position: fixed;
+    pointer-events: none;
+}
+
+.line {animation:line-cross1-draw 1s; stroke-dasharray: 150;}
 @keyframes line-cross1-draw {
     0%{stroke-dashoffset: 150;}
     100%{stroke-dashoffset: 0;}

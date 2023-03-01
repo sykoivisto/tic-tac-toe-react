@@ -4,6 +4,7 @@ import styles from './Gameboard.module.scss';
 
 import Gridsquare from '../Gridsquare/Gridsquare';
 import GameEndModal from '../GameEndModal/GameEndModal';
+import GameWinLine from '../GameWinLine/GameWinLine';
 
 const Gameboard = () => {
   const [gameState, setGameState] = useState([
@@ -16,55 +17,57 @@ const Gameboard = () => {
   const [player2Score, setPlayer2Score] = useState(0);
   const [gameEndWinner, setGameEndWinner] = useState(0);
   const [displayGameEndModal, setDisplayGameEndModal] = useState(false);
+  const [winningLine, setWinningLine] = useState([0,0]); // two vals representing the first and second point of the line. 0-8 represent each grid square.
+  const [showWinningLine, setShowWinningLine] = useState(false);
 
   const checkForGameOver = (gameState) => { //returns an object {gameOver (bool), winner (int), {line (string), num (int)}}
     if (gameState[0][0] === gameState[0][1] && gameState[0][0] === gameState[0][2] && gameState[0][0] !== 0) {
       return ({
         gameOver: true,
         winner: gameState[0][0],
-        winningLine: {line: 'row', num: 0}
+        winningLine: [0,2]
       })
     } else if (gameState[1][0] === gameState[1][1] && gameState[1][0] === gameState[1][2] && gameState[1][0] !== 0) {
       return ({
         gameOver: true,
         winner: gameState[1][0],
-        winningLine: {line: 'row', num: 1}
+        winningLine: [3,5]
       })
     } else if (gameState[2][0] === gameState[2][1] && gameState[2][0] === gameState[2][2] && gameState[2][0] !== 0) {
       return ({
         gameOver: true,
         winner: gameState[2][0],
-        winningLine: {line: 'row', num: 2}
+        winningLine: [6,8]
       })
     } else if (gameState[0][0] === gameState[1][0] && gameState[0][0] === gameState[2][0] && gameState[0][0] !== 0) {
       return ({
         gameOver: true,
         winner: gameState[0][0],
-        winningLine: {line: 'col', num: 0}
+        winningLine: [0,6]
       })
     } else if (gameState[0][1] === gameState[1][1] && gameState[0][1] === gameState[2][1] && gameState[0][1] !== 0) {
       return ({
         gameOver: true,
         winner: gameState[0][1],
-        winningLine: {line: 'col', num: 1}
+        winningLine: [1,7]
       })
     } else if (gameState[0][2] === gameState[1][2] && gameState[0][2] === gameState[2][2] && gameState[0][2] !== 0) {
       return ({
         gameOver: true,
         winner: gameState[0][2],
-        winningLine: {line: 'col', num: 2}
+        winningLine: [2,8]
       })
     } else if (gameState[0][0] === gameState[1][1] && gameState[0][0] === gameState[2][2] && gameState[0][0] !== 0) {
       return ({
         gameOver: true,
         winner: gameState[0][0],
-        winningLine: {line: 'diag', num: 0}
+        winningLine: [0,8]
       })
     } else if (gameState[0][2] === gameState[1][1] && gameState[0][2] === gameState[2][0] && gameState[0][2] !== 0) {
       return ({
         gameOver: true,
         winner: gameState[0][2],
-        winningLine: {line: 'diag', num: 1}
+        winningLine: [2,6]
       })
     }
 
@@ -78,6 +81,7 @@ const Gameboard = () => {
     })
   }
 
+  // records the click and changes the player turn
   const onHandlePlayerClick = (square) => { // square is an array of row val and then column val e.g. [0,0] for the top left square in the grid
     // update the game board
     const newGameState = gameState.slice() //copy the array
@@ -87,13 +91,17 @@ const Gameboard = () => {
     playerTurn === 1 ? setPlayerTurn(2) : setPlayerTurn(1);
   }
 
+  // handler that hides the end game modal and winning line and calls to reset the game.
   const onClickHideGameEndModal = () => {
     resetGameboard();
+    setShowWinningLine(false);
     setDisplayGameEndModal(false);
   }
 
+  // util function for delays
   const delay = (ms) => new Promise(res => setTimeout(res, ms));
 
+  // displays the modal after 2 secs
   const onDisplayGameEndModal = async (winner) => {
     setGameEndWinner(winner);
 
@@ -102,6 +110,7 @@ const Gameboard = () => {
     setDisplayGameEndModal(true);
   }
 
+  // resets the game and player turn to default
   const resetGameboard = () => {
     setGameState([
       [0, 0, 0],
@@ -119,9 +128,13 @@ const Gameboard = () => {
       switch (gameOverState.winner) {
         case 1:
           setPlayer1Score(oldScore => oldScore + 1);
+          setWinningLine(gameOverState.winningLine);
+          setShowWinningLine(true);
           break;
         case 2:
           setPlayer2Score(oldScore => oldScore + 1);
+          setWinningLine(gameOverState.winningLine);
+          setShowWinningLine(true);
           break;
         default:
           break;
@@ -154,20 +167,24 @@ const Gameboard = () => {
         </div>
       </div>
       <div className={styles.gameboard}>
+        { showWinningLine ? 
+          <div className={`${styles.gameEndLine}, ${ displayGameEndModal ? styles.fadeOut : null}`}>
+            <GameWinLine winningLine={winningLine}></GameWinLine>
+          </div> : null }
         <div className={styles.row}>
-          <Gridsquare value={gameState[0][0]} square={[0,0]} onHandlePlayerClick={onHandlePlayerClick} id='1'></Gridsquare>
-          <Gridsquare value={gameState[0][1]} square={[0,1]} onHandlePlayerClick={onHandlePlayerClick} id='2'></Gridsquare>
-          <Gridsquare value={gameState[0][2]} square={[0,2]} onHandlePlayerClick={onHandlePlayerClick} id='3'></Gridsquare>
+          <Gridsquare value={gameState[0][0]} square={[0,0]} onHandlePlayerClick={onHandlePlayerClick}></Gridsquare>
+          <Gridsquare value={gameState[0][1]} square={[0,1]} onHandlePlayerClick={onHandlePlayerClick}></Gridsquare>
+          <Gridsquare value={gameState[0][2]} square={[0,2]} onHandlePlayerClick={onHandlePlayerClick}></Gridsquare>
         </div>
         <div className={styles.row}>
-          <Gridsquare value={gameState[1][0]} square={[1,0]} onHandlePlayerClick={onHandlePlayerClick} id='4'></Gridsquare>
-          <Gridsquare value={gameState[1][1]} square={[1,1]} onHandlePlayerClick={onHandlePlayerClick} id='5'></Gridsquare>
-          <Gridsquare value={gameState[1][2]} square={[1,2]} onHandlePlayerClick={onHandlePlayerClick} id='6'></Gridsquare>
+          <Gridsquare value={gameState[1][0]} square={[1,0]} onHandlePlayerClick={onHandlePlayerClick}></Gridsquare>
+          <Gridsquare value={gameState[1][1]} square={[1,1]} onHandlePlayerClick={onHandlePlayerClick}></Gridsquare>
+          <Gridsquare value={gameState[1][2]} square={[1,2]} onHandlePlayerClick={onHandlePlayerClick}></Gridsquare>
         </div>
         <div className={styles.row}>
-          <Gridsquare value={gameState[2][0]} square={[2,0]} onHandlePlayerClick={onHandlePlayerClick} id='7'></Gridsquare>
-          <Gridsquare value={gameState[2][1]} square={[2,1]} onHandlePlayerClick={onHandlePlayerClick} id='8'></Gridsquare>
-          <Gridsquare value={gameState[2][2]} square={[2,2]} onHandlePlayerClick={onHandlePlayerClick} id='9'></Gridsquare>
+          <Gridsquare value={gameState[2][0]} square={[2,0]} onHandlePlayerClick={onHandlePlayerClick}></Gridsquare>
+          <Gridsquare value={gameState[2][1]} square={[2,1]} onHandlePlayerClick={onHandlePlayerClick}></Gridsquare>
+          <Gridsquare value={gameState[2][2]} square={[2,2]} onHandlePlayerClick={onHandlePlayerClick}></Gridsquare>
         </div>
       </div>
     </div>
