@@ -19,13 +19,33 @@
 
 .scoreboard {
   width: 500px;
-  margin: 0 auto;
+  margin: 20px auto 0 auto;
   display: flex;
   justify-content: space-around;
+  font-size: 24px;
+  line-height: 1.5;
 }
 .active {
   border-bottom: 2px solid blue;
 }
 .score {
   text-align: center;
+}
+.gameEndModal {
+  animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+  0% {
+      display: none;
+      opacity: 0;
+  }
+  1% {
+      display: block;
+      opacity: 0;
+  }
+  100% {
+      display: block;
+      opacity: 1;
+  }
 }

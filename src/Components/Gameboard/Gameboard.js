@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import styles from './Gameboard.module.scss';
 
 import Gridsquare from '../Gridsquare/Gridsquare';
+import GameEndModal from '../GameEndModal/GameEndModal';
 
 const Gameboard = () => {
   const [gameState, setGameState] = useState([
@@ -13,6 +14,8 @@ const Gameboard = () => {
   const [playerTurn, setPlayerTurn] = useState(1);
   const [player1Score, setPlayer1Score] = useState(0);
   const [player2Score, setPlayer2Score] = useState(0);
+  const [gameEndWinner, setGameEndWinner] = useState(0);
+  const [displayGameEndModal, setDisplayGameEndModal] = useState(false);
 
   const checkForGameOver = (gameState) => { //returns an object {gameOver (bool), winner (int), {line (string), num (int)}}
     if (gameState[0][0] === gameState[0][1] && gameState[0][0] === gameState[0][2] && gameState[0][0] !== 0) {
@@ -84,12 +87,28 @@ const Gameboard = () => {
     playerTurn === 1 ? setPlayerTurn(2) : setPlayerTurn(1);
   }
 
+  const onClickHideGameEndModal = () => {
+    resetGameboard();
+    setDisplayGameEndModal(false);
+  }
+
+  const delay = (ms) => new Promise(res => setTimeout(res, ms));
+
+  const onDisplayGameEndModal = async (winner) => {
+    setGameEndWinner(winner);
+
+    await delay(2000);
+    // the modal should set a modal state to true, which renders the modal in the dom.
+    setDisplayGameEndModal(true);
+  }
+
   const resetGameboard = () => {
     setGameState([
       [0, 0, 0],
       [0, 0, 0],
       [0, 0, 0]
     ])
+    setPlayerTurn(1);
   }
 
   useEffect (() => {
@@ -97,36 +116,29 @@ const Gameboard = () => {
     const gameOverState = checkForGameOver(gameState);
 
     if (gameOverState.gameOver === true) {
-      // if the game is over
-      console.log('game over')
-
       switch (gameOverState.winner) {
         case 1:
           setPlayer1Score(oldScore => oldScore + 1);
-          // display the winning line
           break;
         case 2:
           setPlayer2Score(oldScore => oldScore + 1);
-          // display the winning line
           break;
         default:
-          console.log('its a tie');
-          // display a brief message
           break;
+        }
+        onDisplayGameEndModal(gameOverState.winner)
       }
-
-      // clear the gameboard
-      resetGameboard();
-      // reset the player turn to 1
-      setPlayerTurn(1);
-      
-    }
-
-    console.log(gameOverState)
   }, [gameState])
 
   return (
     <div>
+      {
+        displayGameEndModal ? 
+          <div className={styles.gameEndModal} >
+            <GameEndModal winner={gameEndWinner} onClickHandler={onClickHideGameEndModal}></GameEndModal>
+          </div> : null
+      }
+
       <div className={styles.scoreboard}>
         <div className={`${styles.player1} ${playerTurn === 1 ? styles.active : null}`}>
           Player 1
