@@ -2,33 +2,19 @@ import React, { useEffect, useState } from 'react';
 
 import styles from './Gameboard.module.scss';
 
-import SampleGame from '../../SampleGame';
 import Gridsquare from '../Gridsquare/Gridsquare';
 
 const Gameboard = () => {
-  const [gameState, setGameState] = useState(SampleGame);
+  const [gameState, setGameState] = useState([
+    [0, 0, 0],
+    [0, 0, 0],
+    [0, 0, 0]
+  ]);
   const [playerTurn, setPlayerTurn] = useState(1);
   const [player1Score, setPlayer1Score] = useState(0);
   const [player2Score, setPlayer2Score] = useState(0);
 
-  const onHandlePlayerClick = (square) => { // square is an array of row val and then column val e.g. [0,0] for the top left square in the grid
-    // update the game board
-    const newGameState = gameState.slice() //copy the array
-    newGameState[square[0]][square[1]] = playerTurn //manipulations
-    setGameState(newGameState) //set the new state
-    // change the player turn
-    playerTurn === 1 ? setPlayerTurn(2) : setPlayerTurn(1);
-  }
-
-  const onHandleGameOver = (gameOverState) => {
-    //stuff to do here:
-    //add score to the winning player
-    //display the winning line with an animation
-    //clear the game board
-    //reset the player turn to 1
-  }
-
-  const checkForGameOver = () => { //returns an object {bool: game is over, int: winning player, obj: {string: row/col, int: row/col#}}
+  const checkForGameOver = (gameState) => { //returns an object {gameOver (bool), winner (int), {line (string), num (int)}}
     if (gameState[0][0] === gameState[0][1] && gameState[0][0] === gameState[0][2] && gameState[0][0] !== 0) {
       return ({
         gameOver: true,
@@ -89,11 +75,54 @@ const Gameboard = () => {
     })
   }
 
+  const onHandlePlayerClick = (square) => { // square is an array of row val and then column val e.g. [0,0] for the top left square in the grid
+    // update the game board
+    const newGameState = gameState.slice() //copy the array
+    newGameState[square[0]][square[1]] = playerTurn //manipulations
+    setGameState(newGameState) //set the new state
+    // change the player turn
+    playerTurn === 1 ? setPlayerTurn(2) : setPlayerTurn(1);
+  }
+
+  const resetGameboard = () => {
+    setGameState([
+      [0, 0, 0],
+      [0, 0, 0],
+      [0, 0, 0]
+    ])
+  }
+
   useEffect (() => {
-    const gameOverState = checkForGameOver();
+    
+    const gameOverState = checkForGameOver(gameState);
 
-    if (gameOverState.gameOver === true) onHandleGameOver(gameOverState);
+    if (gameOverState.gameOver === true) {
+      // if the game is over
+      console.log('game over')
 
+      switch (gameOverState.winner) {
+        case 1:
+          setPlayer1Score(oldScore => oldScore + 1);
+          // display the winning line
+          break;
+        case 2:
+          setPlayer2Score(oldScore => oldScore + 1);
+          // display the winning line
+          break;
+        default:
+          console.log('its a tie');
+          // display a brief message
+          break;
+      }
+
+      // clear the gameboard
+      resetGameboard();
+      // reset the player turn to 1
+      setPlayerTurn(1);
+      
+    }
+
+    console.log(gameOverState)
   }, [gameState])
 
   return (
