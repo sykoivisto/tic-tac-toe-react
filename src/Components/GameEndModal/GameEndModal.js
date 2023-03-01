@@ -4,11 +4,6 @@ import styles from './GameEndModal.module.scss'
 
 const GameEndModal = ({winner, onClickHandler}) => {
 
-      // modal should dispay the cross or circle depending on winner and say "winner"
-    // if the game is a draw it will say "its a draw" with both the cross and circle
-    // when clicking on the modal it calls resetGameboard();
-
-
   switch (winner) {
     case 1:
       return(
